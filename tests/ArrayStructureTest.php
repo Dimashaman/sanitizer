@@ -16,8 +16,6 @@ class ArrayStructureTest extends TestCase
         $this->assertNotNull($rule->validate(["foo" => "1", "bar" => 1, "baz" => '+79963433704'])->getValidatedValue());
         $this->assertNotNull($rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
         $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
-//        $this->assertNotNull($rule->validate(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSCHE" => '1'], "Fiat" => '2'])->getMessage());
-//        $this->assertNull($rule->validate(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSCHE" => '1'], "Fiat" => '2'])->getValidatedValue());
     }
 
     public function testComplexStructure()
@@ -32,8 +30,6 @@ class ArrayStructureTest extends TestCase
         $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
         $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066', "biz" => ['hello', 1]])->getMessage());
         $this->assertEquals(["foo" => "1", "bar" => 2, "baz" => '+79963433704', "biz" => ['hello', 'world']], $rule->validate(["foo" => "1", "bar" => 2, "baz" => '+79963433704', "biz" => ['hello', 'world']])->getValidatedValue());
-//        $this->assertNotNull($rule->validate(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSCHE" => '1'], "Fiat" => '2'])->getMessage());
-//        $this->assertNull($rule->validate(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSCHE" => '1'], "Fiat" => '2'])->getValidatedValue());
     }
 
     public function testRecursiveStructure()
