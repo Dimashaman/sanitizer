@@ -1,25 +1,45 @@
 <?php
 
-namespace Dima\Validation\Rule;
+namespace Dima\Sanitizer\Rule;
 
 use PHPUnit\Framework\TestCase;
-use Dima\Validator\Rule\ArrayStructure;
 
 class ArrayStructureTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $structure = ["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7'], "Fiat" => '2'];
 
-        
-        $this->rule = new ArrayStructure($structure);
-    }
 
     public function testValidation()
     {
-        $this->assertNotNull($this->rule->assignValue(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7'], "Fiat" => '2'])->validate()->getValidatedValue());
-        $this->assertNull($this->rule->assignValue(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7'], "Fiat" => '2'])->validate()->getMessage());
-        $this->assertNotNull($this->rule->assignValue(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSHE" => '1'], "Fiat" => '2'])->validate()->getMessage());
-        $this->assertNull($this->rule->assignValue(["Ford" => '1', "german" => ["BMW" => '11', "AUDI" => '7', "PORSHE" => '1'], "Fiat" => '2'])->validate()->getValidatedValue());
+        $structure = ["foo" => (new StringType()), "bar" => (new IntegerType()), "baz" => (new RussianFederalPhoneNumber())];
+        $rule = new ArrayStructure($structure);
+
+        $this->assertNotNull($rule->validate(["foo" => "1", "bar" => 1, "baz" => '+79963433704'])->getValidatedValue());
+        $this->assertNotNull($rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
+        $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
+    }
+
+    public function testComplexStructure()
+    {
+        $structure = ["foo" => (new StringType()), "bar" => (new IntegerType()), "baz" => (new RussianFederalPhoneNumber()), "biz" => (
+        new ArraySameType(new StringType())
+        )];
+        $rule = new ArrayStructure($structure);
+
+        $this->assertNotNull($rule->validate(["foo" => "1", "bar" => 1, "baz" => '+79963433704', "biz" => ['hello', 'world']])->getValidatedValue());
+        $this->assertNotNull($rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
+        $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066'])->getMessage());
+        $this->assertEquals('This input must have correct structure', $rule->validate(["foo" => "1", "bar" => "abc", "baz" => '2605066', "biz" => ['hello', 1]])->getMessage());
+        $this->assertEquals(["foo" => "1", "bar" => 2, "baz" => '+79963433704', "biz" => ['hello', 'world']], $rule->validate(["foo" => "1", "bar" => 2, "baz" => '+79963433704', "biz" => ['hello', 'world']])->getValidatedValue());
+    }
+
+    public function testRecursiveStructure()
+    {
+        $substructure = ['name' => (new StringType()), 'phone' => (new RussianFederalPhoneNumber()), 'contacts' => (new ArraySameType(StringType::class))];
+        $structure = ["id" => (new IntegerType()), "userdata" => (new ArrayStructure($substructure))];
+
+        $rule = new ArrayStructure($structure);
+
+        $this->assertNotNull($rule->validate(["id" => 1, "userdata" => ['name' => 'ivan', "phone" => "+79963433704", "contacts" => ['John', 'Ada']]])->getValidatedValue());
+        $this->assertNotNull($rule->validate(["id" => 1, "userdata" => ['name' => 44, "phone" => "+79963433704"]])->getMessage());
     }
 }

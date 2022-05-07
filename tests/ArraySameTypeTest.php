@@ -1,20 +1,17 @@
 <?php
 
-namespace Dima\Validation\Rule;
+namespace Dima\Sanitizer\Rule;
 
 use PHPUnit\Framework\TestCase;
-use Dima\Validator\Rule\ArraySameType;
 
 class ArraySameTypeTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->rule = new ArraySameType((string) 'string');
-    }
-
     public function testValidation()
     {
-        $this->assertEquals(['hello', 'world'], $this->rule->assignValue(['hello', 'world'])->validate()->getValidatedValue());
-        $this->assertNull($this->rule->assignValue(['hello', 'world', 1])->validate()->getValidatedValue());
+        $rule = new ArraySameType(StringType::class);
+
+        $this->assertEquals(['hello', 'world'], $rule->validate(['hello', 'world'])->getValidatedValue());
+        $this->assertNull($rule->validate(['hello', 'world', 1])->getValidatedValue());
+        $this->assertEquals('This input must be a same typed array', $rule->validate(['hello', 'world', 1])->getMessage());
     }
 }

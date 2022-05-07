@@ -1,20 +1,20 @@
 {
-    "name": "dima/validator",
-    "description": "custom validator with sanitazer and error messages",
-    "type": "library",
-    "autoload": {
-        "psr-4": {
-            "Dima\\Validator\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Dmitry Shmanko",
-            "email": "dimashaman@icloud.com"
-        }
-    ],
-    "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "phpstan/phpstan": "^1.5"
+  "name": "dima/sanitizer",
+  "description": "custom sanitizer with validation and error messages",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Dima\\Sanitizer\\": "Sanitizer/"
     }
+  },
+  "authors": [
+    {
+      "name": "Dmitry Shmanko",
+      "email": "dimashaman@icloud.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "phpstan/phpstan": "^1.5"
+  }
 }

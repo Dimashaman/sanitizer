@@ -1,24 +1,20 @@
 <?php
 
-namespace Dima\Validation\Rule;
+namespace Dima\Sanitizer\Rule;
 
 use PHPUnit\Framework\TestCase;
-use Dima\Validator\Rule\RussianFederalPhoneNumber;
 
 class RussianFederalPhoneNumberTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->rule = new RussianFederalPhoneNumber();
-    }
-
     public function testValidation()
     {
-        $this->assertEquals("79502885623", $this->rule->assignValue("8 (950) 288-56-23")->validate()->getValidatedValue());
-        $this->assertNotNull($this->rule->assignValue("260557")->validate()->getMessage());
-        $this->assertEquals("74242242626", $this->rule->assignValue('+7 4242 24-26-26')->validate()->getValidatedValue());
-        $this->assertEquals("74242242626", $this->rule->assignValue('7 4242 24-26-26')->validate()->getValidatedValue());
-        $this->assertNull($this->rule->assignValue('1.23')->validate()->getValidatedValue());
-        $this->assertNull($this->rule->assignValue('123 world')->validate()->getValidatedValue());
+        $rule = new RussianFederalPhoneNumber();
+
+        $this->assertEquals("79502885623", $rule->validate("8 (950) 288-56-23")->getValidatedValue());
+        $this->assertNotNull($rule->validate("260557")->getMessage());
+        $this->assertEquals("74242242626", $rule->validate('+7 4242 24-26-26')->getValidatedValue());
+        $this->assertEquals("74242242626", $rule->validate('7 4242 24-26-26')->getValidatedValue());
+        $this->assertNull($rule->validate('1.23')->getValidatedValue());
+        $this->assertNull($rule->validate('123 world')->getValidatedValue());
     }
 }

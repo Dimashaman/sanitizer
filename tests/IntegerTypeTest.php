@@ -1,23 +1,19 @@
 <?php
 
-namespace Dima\Validation\Rule;
+namespace Dima\Sanitizer\Rule;
 
 use PHPUnit\Framework\TestCase;
-use Dima\Validator\Rule\IntegerType;
 
 class IntegerTypeTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->rule = new IntegerType();
-    }
-
     public function testValidation()
     {
-        $this->assertEquals(40, $this->rule->assignValue(40)->validate()->getValidatedValue());
-        $this->assertEquals(null, $this->rule->assignValue('abc')->validate()->getValidatedValue());
-        $this->assertEquals(null, $this->rule->assignValue('123abc123')->validate()->getValidatedValue());
-        $this->assertNull($this->rule->assignValue(38)->validate()->getMessage());
-        $this->assertNotNull($this->rule->assignValue(38.7)->validate()->getMessage());
+        $rule = new IntegerType();
+
+        $this->assertEquals(40, $rule->validate(40)->getValidatedValue());
+        $this->assertEquals(null, $rule->validate('abc')->getValidatedValue());
+        $this->assertEquals(null, $rule->validate('123abc123')->getValidatedValue());
+        $this->assertNull($rule->validate(38)->getMessage());
+        $this->assertNotNull($rule->validate(38.7)->getMessage());
     }
 }
